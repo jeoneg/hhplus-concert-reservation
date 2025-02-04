@@ -14,11 +14,6 @@ public class ReservationJpaWriter implements ReservationWriter {
     private final ReservationJpaRepository reservationJpaRepository;
 
     @Override
-    public Optional<Reservation> findByScheduleIdAndSeatId(Long scheduleId, Long seatId) {
-        return reservationJpaRepository.findByScheduleIdAndSeatId(scheduleId, seatId);
-    }
-
-    @Override
     public Reservation save(Reservation reservation) {
         return reservationJpaRepository.save(reservation);
     }

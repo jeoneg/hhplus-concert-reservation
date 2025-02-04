@@ -7,6 +7,7 @@ import kr.hhplus.be.server.domain.BaseTimeEntity;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
@@ -15,7 +16,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class Place extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
 }

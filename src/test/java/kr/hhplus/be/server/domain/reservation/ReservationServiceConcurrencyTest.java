@@ -48,16 +48,16 @@ class ReservationServiceConcurrencyTest {
     private SeatWriter seatWriter;
 
     @Test
-    void 특정_좌석을_예약할_때_동시에_10개의_요청이_들어오면_1개의_요청만_성공한다() throws InterruptedException {
+    void 특정_좌석을_예약할_때_동시에_50개의_요청이_들어오면_1개의_요청만_성공한다() throws InterruptedException {
         // given
         Long concertId = 1L;
         Long scheduleId = 1L;
         Long seatId = 1L;
 
-        int threadCount = 10;
+        int threadCount = 50;
 
         for (int i = 0; i <= threadCount; i++) {
-            userWriter.save(createUser("user" + i));
+            User user = userWriter.save(createUser("user" + i));
         }
 
         concertWriter.save(createConcert("title"));
@@ -71,8 +71,8 @@ class ReservationServiceConcurrencyTest {
         AtomicInteger failCount = new AtomicInteger(0);
         long startTime = System.currentTimeMillis();
         List<Long> durations = new ArrayList<>();
-        IntStream.range(1, threadCount + 1).forEach(i -> {
-            Long userId = (long) i;
+        IntStream.range(0, threadCount).forEach(i -> {
+            Long userId = (long) (i + 1);
             es.submit(() -> {
                 long taskStartTime = System.currentTimeMillis();
                 try {
@@ -92,7 +92,7 @@ class ReservationServiceConcurrencyTest {
 
         // then
         assertThat(successCount.get()).isEqualTo(1);
-        assertThat(failCount.get()).isEqualTo(9);
+        assertThat(failCount.get()).isEqualTo(49);
 
         log.info("전체 소요 시간: {}ms", System.currentTimeMillis() - startTime);
         log.info("최소 소요 시간: {}ms", durations.stream().min(Long::compare).orElse(0L));

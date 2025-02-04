@@ -1,9 +1,6 @@
 package kr.hhplus.be.server.domain.concert.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Enumerated;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import kr.hhplus.be.server.domain.BaseTimeEntity;
 import kr.hhplus.be.server.domain.concert.model.SeatStatus;
 import lombok.Builder;
@@ -13,6 +10,7 @@ import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
 
 import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import static kr.hhplus.be.server.domain.concert.model.SeatStatus.RESERVED;
 import static kr.hhplus.be.server.domain.concert.model.SeatStatus.TEMPORARY_RESERVED;
 import static lombok.AccessLevel.PROTECTED;
@@ -23,7 +21,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class Seat extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private Long placeId;
 
@@ -32,6 +30,8 @@ public class Seat extends BaseTimeEntity {
 
     private LocalDateTime expiredAt;
     private int price;
+
+    @Version
     private Long version;
 
     @Builder

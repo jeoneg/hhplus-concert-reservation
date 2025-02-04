@@ -9,6 +9,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
 import static kr.hhplus.be.server.common.exception.ErrorMessage.*;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -18,7 +19,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class Point extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private Long userId;
     private int balance;

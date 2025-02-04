@@ -11,13 +11,15 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 
+import static jakarta.persistence.GenerationType.IDENTITY;
+
 @Getter
 @Entity
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class ConcertSchedule extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private Long concertId;
     private Long placeId;

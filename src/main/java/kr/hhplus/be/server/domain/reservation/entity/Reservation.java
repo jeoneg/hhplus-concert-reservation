@@ -11,6 +11,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
 import static kr.hhplus.be.server.domain.reservation.model.ReservationStatus.CONFIRMED;
 import static kr.hhplus.be.server.domain.reservation.model.ReservationStatus.PAYMENT_PENDING;
 import static lombok.AccessLevel.PROTECTED;
@@ -21,7 +22,7 @@ import static lombok.AccessLevel.PROTECTED;
 public class Reservation extends BaseTimeEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = IDENTITY)
     private Long id;
     private Long userId;
     private Long concertId;

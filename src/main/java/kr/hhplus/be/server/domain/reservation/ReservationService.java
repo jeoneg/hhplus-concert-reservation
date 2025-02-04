@@ -45,6 +45,7 @@ public class ReservationService {
                 .orElseThrow(() -> new NotFoundException(CONCERT_NOT_FOUND.getMessage()));
         ConcertSchedule schedule = concertScheduleReader.findById(command.scheduleId())
                 .orElseThrow(() -> new NotFoundException(SCHEDULE_NOT_FOUND.getMessage()));
+
         Seat seat = seatReader.findByIdWithLock(command.seatId())
                 .orElseThrow(() -> new NotFoundException(SEAT_NOT_FOUND.getMessage()));
 
@@ -58,7 +59,7 @@ public class ReservationService {
         Reservation reservation = Reservation.create(command.userId(), command.concertId(), command.scheduleId(), command.seatId(), seat.getPrice());
         Reservation savedReservation = reservationWriter.save(reservation);
 
-        log.info("예약 성공: 사용자 ID = {}, 좌석 ID = {}, 예약 ID = {}", reservation.getId(), savedReservation.getSeatId(), savedReservation.getId());
+        log.info("예약 성공: 사용자 ID = {}, 좌석 ID = {}, 예약 ID = {}", user.getId(), savedReservation.getSeatId(), savedReservation.getId());
         return ReservationInfo.Create.from(savedReservation);
     }
 
