@@ -50,6 +50,12 @@ dependencies {
     compileOnly("org.projectlombok:lombok")
     annotationProcessor("org.projectlombok:lombok")
 
+    // Swagger
+    implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.3")
+
+    // Log
+    implementation("com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.5.6")
+
     // Test
     testImplementation("org.springframework.boot:spring-boot-starter-test")
     testImplementation("org.springframework.boot:spring-boot-testcontainers")
@@ -63,20 +69,4 @@ dependencies {
 tasks.withType<Test> {
     useJUnitPlatform()
     systemProperty("user.timezone", "UTC")
-}
-
-val querydslDir = "src/main/generated"
-
-sourceSets {
-    getByName("main").java.srcDirs(querydslDir)
-}
-
-tasks.withType<JavaCompile> {
-    options.generatedSourceOutputDirectory = file(querydslDir)
-}
-
-tasks.named("clean") {
-    doLast {
-        file(querydslDir).deleteRecursively()
-    }
 }
