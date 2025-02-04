@@ -1,0 +1,318 @@
+openapi: 3.0.3
+info:
+  title: Concert Reservation - OpenAPI 3.0
+  version: 0.0.1
+servers:
+  - url: http://localhost:8080/api/v1
+tags:
+  - name: Concert Reservation API
+    description: 콘서트 예약 API
+paths:
+  /api/v1/waiting-queues:
+    post:
+      tags:
+        - Concert Reservation API
+      summary: 대기열 정보 생성
+      description: 서비스에 접근할 수 있는 대기열 정보를 생성합니다.
+      operationId: createWaitingQueue
+      responses:
+        '200':
+          description: 요청 성공
+          content:
+            application/json:
+              schema:
+                example:
+                  id: 1
+                  userId: 1
+                  token: 72e52233-6455-4ea3-b74c-4290cca36880
+                  status: WAITING
+                  createdAt: 2025-02-04T04:54:40
+        '400':
+          description: Bad Request, 요청을 처리할 수 없는 경우
+        '404':
+          description: Not Found, 요청 resource 가 존재하지 않는 경우
+
+    get:
+      tags:
+        - Concert Reservation API
+      summary: 대기열 정보 조회
+      description: 서비스에 접근할 수 있는 대기열 정보를 조회합니다.
+      operationId: getWaitingQueue
+      parameters:
+        - name: Queue-Token
+          in: header
+          description: 대기열 토큰
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: 요청 성공
+          content:
+            application/json:
+              schema:
+                example:
+                  id: 1
+                  userId: 1
+                  token: 72e52233-6455-4ea3-b74c-4290cca36880
+                  status: ACTIVATED
+                  activatedAt: 2025-02-04T04:57:06
+                  expiredAt: 2025-02-04T05:07:06
+                  createdAt: 2025-02-04T04:57:06
+                  modifiedAt: 2025-02-04T05:07:06
+                  order: 7
+        '400':
+          description: Bad Request, 요청을 처리할 수 없는 경우
+        '404':
+          description: Not Found, 요청 resource 가 존재하지 않는 경우
+
+  /api/v1/concerts/{concertId}/schedules:
+    get:
+      tags:
+        - Concert Reservation API
+      summary: 콘서트 스케줄 조회
+      description: 특정 콘서트의 모든 스케줄을 조회합니다.
+      operationId: getSchedules
+      parameters:
+        - name: Queue-Token
+          in: header
+          description: 대기열 토큰
+          required: true
+          schema:
+            type: string
+        - name: concertId
+          in: path
+          description: 조회할 콘서트의 ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 요청 성공
+          content:
+            application/json:
+              schema:
+                example:
+                  - scheduleId: 1
+                    placeId: 1
+                    scheduledAt: "2025-01-03T17:00:00"
+                  - scheduleId: 2
+                    placeId: 1
+                    scheduledAt: "2025-01-04T18:00:00"
+                  - scheduleId: 3
+                    placeId: 1
+                    scheduledAt: "2025-01-05T19:00:00"
+        '400':
+          description: Bad Request, 요청을 처리할 수 없는 경우
+        '404':
+          description: Not Found, 요청 resource 가 존재하지 않는 경우
+
+  /api/v1/concerts/{concertId}/schedules/{scheduleId}/seats:
+    get:
+      tags:
+        - Concert Reservation API
+      summary: 콘서트 좌석 조회
+      description: 특정 콘서트의 특정 스케줄에 대한 모든 좌석을 조회합니다.
+      operationId: getSeats
+      parameters:
+        - name: Queue-Token
+          in: header
+          description: 대기열 토큰
+          required: true
+          schema:
+            type: string
+        - name: concertId
+          in: path
+          description: 조회할 콘서트의 ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - name: scheduleId
+          in: path
+          description: 조회할 콘서트 스케줄의 ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 요청 성공
+          content:
+            application/json:
+              schema:
+                example:
+                  - seatId: 1
+                    availableYn: Y
+                  - seatId: 2
+                    availableYn: N
+                  - seatId: 3
+                    availableYn: N
+        '400':
+          description: Bad Request, 요청을 처리할 수 없는 경우
+        '404':
+          description: Not Found, 요청 resource 가 존재하지 않는 경우
+
+  /api/v1/reservations:
+    post:
+      tags:
+        - Concert Reservation API
+      summary: 콘서트 좌석 예약
+      description: 특정 콘서트 좌석을 예약합니다.
+      operationId: reserve
+      parameters:
+        - name: Queue-Token
+          in: header
+          description: 대기열 토큰
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 콘서트 예약 정보
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: integer
+                  format: int64
+                  example: 2
+                concertId:
+                  type: integer
+                  format: int64
+                  example: 3
+                scheduleId:
+                  type: integer
+                  format: int64
+                  example: 4
+                seatId:
+                  type: integer
+                  format: int64
+                  example: 5
+        required: true
+      responses:
+        '200':
+          description: 요청 성공
+          content:
+            application/json:
+              schema:
+                example:
+                  id: 1
+                  userId: 2
+                  concertId: 3
+                  scheduleId: 4
+                  seatId: 5
+                  paymentAmount: 130000
+                  status: PAYMENT_PENDING
+        '400':
+          description: Bad Request, 요청을 처리할 수 없는 경우
+        '404':
+          description: Not Found, 요청 resource 가 존재하지 않는 경우
+
+  /api/v1/points/charge:
+    post:
+      tags:
+        - Concert Reservation API
+      summary: 포인트 충전
+      description: 특정 사용자의 포인트를 충전합니다.
+      operationId: chargePoint
+      requestBody:
+        description: 충전할 포인트 정보
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: integer
+                  format: int64
+                  example: 1
+                amount:
+                  type: integer
+                  format: int64
+                  example: 10000
+        required: true
+      responses:
+        '200':
+          description: 요청 성공
+          content:
+            application/json:
+              schema:
+                example:
+                  userId: 1
+                  balance: 20000
+        '400':
+          description: Bad Request, 요청을 처리할 수 없는 경우
+        '404':
+          description: Not Found, 요청 resource 가 존재하지 않는 경우
+
+  /api/v1/points:
+    get:
+      tags:
+        - Concert Reservation API
+      summary: 포인트 잔액 조회
+      description: 특정 사용자의 포인트 잔액을 조회합니다.
+      operationId: getPoint
+      parameters:
+        - name: userId
+          in: query
+          description: 조회할 사용자의 ID
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: 요청 성공
+          content:
+            application/json:
+              schema:
+                example:
+                  userId: 1
+                  balance: 50000
+        '400':
+          description: Bad Request, 요청을 처리할 수 없는 경우
+        '404':
+          description: Not Found, 요청 resource 가 존재하지 않는 경우
+
+  /api/v1/payments:
+    post:
+      tags:
+        - Concert Reservation API
+      summary: 예약 내역 결제
+      description: 특정 예약 내역을 결제합니다.
+      operationId: payments
+      parameters:
+        - name: Queue-Token
+          in: header
+          description: 대기열 토큰
+          required: true
+          schema:
+            type: string
+      requestBody:
+        description: 결제 정보
+        content:
+          application/json:
+            schema:
+              properties:
+                userId:
+                  type: integer
+                  format: int64
+                  example: 1
+                reservationId:
+                  type: integer
+                  format: int64
+                  example: 2
+        required: true
+      responses:
+        '200':
+          description: 요청 성공
+          content:
+            application/json:
+              example:
+                reservationId: 1
+                userId: 2
+        '400':
+          description: Bad Request, 요청을 처리할 수 없는 경우
+        '404':
+          description: Not Found, 요청 resource 가 존재하지 않는 경우
