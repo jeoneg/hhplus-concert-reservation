@@ -1,0 +1,15 @@
+package kr.hhplus.be.server.domain.reservation;
+
+import kr.hhplus.be.server.domain.reservation.entity.Reservation;
+
+import java.util.Optional;
+
+public interface ReservationWriter {
+
+    Optional<Reservation> findByScheduleIdAndSeatId(Long scheduleId, Long seatId);
+
+    Reservation save(Reservation reservation);
+
+    Optional<Reservation> findById(Long id);
+
+}
