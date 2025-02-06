@@ -3,8 +3,8 @@ package kr.hhplus.be.server.domain.queue;
 import kr.hhplus.be.server.common.exception.BadRequestException;
 import kr.hhplus.be.server.common.exception.NotFoundException;
 import kr.hhplus.be.server.common.uuid.UUIDGenerator;
-import kr.hhplus.be.server.domain.queue.entity.WaitingQueueStatus;
 import kr.hhplus.be.server.domain.queue.entity.WaitingQueue;
+import kr.hhplus.be.server.domain.queue.entity.WaitingQueueStatus;
 import kr.hhplus.be.server.domain.queue.model.WaitingQueueInfo;
 import kr.hhplus.be.server.domain.user.UserReader;
 import kr.hhplus.be.server.domain.user.entity.User;
@@ -18,7 +18,8 @@ import java.util.Optional;
 import java.util.UUID;
 
 import static kr.hhplus.be.server.common.exception.ErrorMessage.*;
-import static kr.hhplus.be.server.domain.queue.entity.WaitingQueueStatus.*;
+import static kr.hhplus.be.server.domain.queue.entity.WaitingQueueStatus.EXPIRED;
+import static kr.hhplus.be.server.domain.queue.entity.WaitingQueueStatus.WAITING;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.Mockito.*;
@@ -122,61 +123,6 @@ class WaitingQueueServiceTest {
     }
 
     @Test
-    void 특정_대기열_정보를_조회할_때_대기열이_대기_상태이면_대기_번호는_마지막에_활성화된_대기열_id와의_차이와_같다() {
-        // given
-        Long id = 10L;
-        Long userId = 1L;
-        String token = UUID.randomUUID().toString();
-        WaitingQueueStatus status = WAITING;
-
-        Long latestId = 5L;
-        Long latestUserId = 2L;
-        String latestToken = UUID.randomUUID().toString();
-        WaitingQueueStatus latestStatus = ACTIVATED;
-
-        when(waitingQueueReader.findByToken(token)).thenReturn(Optional.of(createWaitingQueue(id, userId, token, status)));
-        when(waitingQueueReader.findLatestActivated()).thenReturn(Optional.of(createWaitingQueue(latestId, latestUserId, latestToken, latestStatus)));
-
-        // when
-        WaitingQueueInfo.GetWaitingQueue result = sut.getWaitingQueue(token);
-
-        // then
-        assertThat(result.id()).isEqualTo(id);
-        assertThat(result.userId()).isEqualTo(userId);
-        assertThat(result.token()).isEqualTo(token);
-        assertThat(result.status()).isEqualTo(status);
-        assertThat(result.waitingNumber()).isEqualTo(id - latestId);
-
-        verify(waitingQueueReader, times(1)).findByToken(token);
-        verify(waitingQueueReader, times(1)).findLatestActivated();
-    }
-
-    @Test
-    void 특정_대기열_정보를_조회할_때_대기열이_대기_상태이고_활성화된_대기열이_없으면_대기_번호는_id와_같다() {
-        // given
-        Long id = 10L;
-        Long userId = 1L;
-        String token = UUID.randomUUID().toString();
-        WaitingQueueStatus status = WAITING;
-
-        when(waitingQueueReader.findByToken(token)).thenReturn(Optional.of(createWaitingQueue(id, userId, token, status)));
-        when(waitingQueueReader.findLatestActivated()).thenReturn(Optional.empty());
-
-        // when
-        WaitingQueueInfo.GetWaitingQueue result = sut.getWaitingQueue(token);
-
-        // then
-        assertThat(result.id()).isEqualTo(id);
-        assertThat(result.userId()).isEqualTo(userId);
-        assertThat(result.token()).isEqualTo(token);
-        assertThat(result.status()).isEqualTo(status);
-        assertThat(result.waitingNumber()).isEqualTo(id);
-
-        verify(waitingQueueReader, times(1)).findByToken(token);
-        verify(waitingQueueReader, times(1)).findLatestActivated();
-    }
-
-    @Test
     void 특정_대기열을_만료할_때_대기열_정보가_존재하지_않으면_NotFoundException을_반환한다() {
         // given
         String token = "empty";
@@ -204,8 +150,6 @@ class WaitingQueueServiceTest {
         sut.expire(token);
 
         // then
-        assertThat(waitingQueue.getStatus()).isEqualTo(EXPIRED);
-
         verify(waitingQueueReader, times(1)).findByToken(token);
     }
 

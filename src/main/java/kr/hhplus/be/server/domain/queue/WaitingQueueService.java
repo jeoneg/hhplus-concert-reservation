@@ -47,42 +47,24 @@ public class WaitingQueueService {
 
         WaitingQueue waitingQueue = waitingQueueReader.findByToken(token)
                 .orElseThrow(() -> new NotFoundException(QUEUE_TOKEN_NOT_FOUND.getMessage()));
-
-        if (waitingQueue.isWaiting()) {
-            Long order = waitingQueueReader.findLatestActivated()
-                    .map(latest -> waitingQueue.getId() - latest.getId())
-                    .orElse(waitingQueue.getId());
-            return WaitingQueueInfo.GetWaitingQueue.of(waitingQueue, order);
-        }
-
-        return WaitingQueueInfo.GetWaitingQueue.of(waitingQueue, 0L);
+        return WaitingQueueInfo.GetWaitingQueue.of(waitingQueue);
     }
 
     public void checkActivatedWaitingQueue(String token) {
-        WaitingQueue waitingQueue = waitingQueueReader.findByToken(token)
+        waitingQueueReader.findByToken(token)
                 .orElseThrow(() -> new NotFoundException(QUEUE_TOKEN_NOT_FOUND.getMessage()));
-
-        if (waitingQueue.isExpired()) {
-            throw new IllegalStateException(QUEUE_TOKEN_EXPIRED.getMessage());
-        }
     }
 
     @Transactional
     public void expire(String token) {
         WaitingQueue waitingQueue = waitingQueueReader.findByToken(token)
                 .orElseThrow(() -> new NotFoundException(QUEUE_TOKEN_NOT_FOUND.getMessage()));
-        waitingQueue.expire();
-        waitingQueueWriter.save(waitingQueue);
+        waitingQueueWriter.expire(waitingQueue);
     }
 
     @Transactional
     public int activateWaitingQueues(int activateSize) {
         return waitingQueueWriter.activateWaitingQueues(activateSize);
-    }
-
-    @Transactional
-    public int expireWaitingQueues() {
-        return waitingQueueWriter.expireWaitingQueues();
     }
 
 }

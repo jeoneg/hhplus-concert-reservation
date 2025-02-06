@@ -5,7 +5,7 @@ import kr.hhplus.be.server.domain.queue.entity.WaitingQueue;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
-@Repository
+//@Repository
 @RequiredArgsConstructor
 public class WaitingQueueJpaWriter implements WaitingQueueWriter {
 
@@ -22,8 +22,13 @@ public class WaitingQueueJpaWriter implements WaitingQueueWriter {
     }
 
     @Override
-    public int expireWaitingQueues() {
-        return waitingQueueJpaRepository.expireWaitingQueues();
+    public void expire(WaitingQueue waitingQueue) {
+
     }
+
+//    @Override
+//    public int expireWaitingQueues() {
+//        return waitingQueueJpaRepository.expireWaitingQueues();
+//    }
 
 }

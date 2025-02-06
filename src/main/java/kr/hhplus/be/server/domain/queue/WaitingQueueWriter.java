@@ -8,6 +8,6 @@ public interface WaitingQueueWriter {
 
     int activateWaitingQueues(int activateSize);
 
-    int expireWaitingQueues();
+    void expire(WaitingQueue waitingQueue);
 
 }

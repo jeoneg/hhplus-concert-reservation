@@ -25,6 +25,10 @@ spring:
       hibernate.jdbc.time_zone: UTC
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 springdoc:
   swagger-ui:
@@ -51,10 +55,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+    #    show-sql: true
     properties:
       hibernate:
         format_sql: true
-        show-sql: true
     defer-datasource-initialization: true
 
   sql:
