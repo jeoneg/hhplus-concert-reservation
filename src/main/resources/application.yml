@@ -69,5 +69,6 @@ spring:
 
 logging:
   level:
+#    org.springframework.cache: trace
     org.hibernate.sql: debug
     org.hibernate.type: trace

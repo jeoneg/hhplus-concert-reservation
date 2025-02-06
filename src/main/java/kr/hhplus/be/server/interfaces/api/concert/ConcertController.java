@@ -1,9 +1,12 @@
 package kr.hhplus.be.server.interfaces.api.concert;
 
 import kr.hhplus.be.server.domain.concert.ConcertScheduleService;
+import kr.hhplus.be.server.domain.concert.ConcertService;
 import kr.hhplus.be.server.domain.concert.SeatService;
+import kr.hhplus.be.server.domain.concert.model.ConcertInfo;
 import kr.hhplus.be.server.domain.concert.model.ConcertScheduleInfo;
 import kr.hhplus.be.server.domain.concert.model.SeatInfo;
+import kr.hhplus.be.server.interfaces.api.concert.response.ConcertResponse;
 import kr.hhplus.be.server.interfaces.api.concert.response.ConcertScheduleResponse;
 import kr.hhplus.be.server.interfaces.api.concert.response.SeatResponse;
 import lombok.RequiredArgsConstructor;
@@ -17,8 +20,18 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ConcertController {
 
+    private final ConcertService concertService;
     private final ConcertScheduleService concertScheduleService;
     private final SeatService seatService;
+
+    @GetMapping("/{concertId}")
+    public ResponseEntity<ConcertResponse.GetConcert> getConcert(
+        @RequestHeader("Queue-Token") String token,
+        @PathVariable Long concertId
+    ) {
+        ConcertInfo.GetConcert concert = concertService.getConcert(concertId);
+        return ResponseEntity.ok(ConcertResponse.GetConcert.from(concert));
+    }
 
     @GetMapping("/{concertId}/schedules")
     public ResponseEntity<List<ConcertScheduleResponse.GetConcertSchedule>> getSchedules(
