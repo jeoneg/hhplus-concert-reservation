@@ -5,6 +5,7 @@ import kr.hhplus.be.server.domain.concert.entity.Concert;
 import kr.hhplus.be.server.domain.concert.entity.ConcertSchedule;
 import kr.hhplus.be.server.domain.concert.model.ConcertScheduleInfo;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -19,6 +20,7 @@ public class ConcertScheduleService {
     private final ConcertReader concertReader;
     private final ConcertScheduleReader concertScheduleReader;
 
+    @Cacheable(value = "concertSchedules", key = "'concert' + ':' + #concertId + ':' + 'schedules'", cacheManager = "cacheManager")
     public List<ConcertScheduleInfo.GetConcertSchedule> getSchedules(Long concertId) {
         Concert concert = concertReader.findById(concertId)
             .orElseThrow(() -> new NotFoundException(CONCERT_NOT_FOUND.getMessage()));

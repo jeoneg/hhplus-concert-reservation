@@ -1,0 +1,6 @@
+POST http://localhost:8989/api/v1/waiting-queues
+Content-Type: application/json
+
+{
+  "userId": "1"
+}
