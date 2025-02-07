@@ -30,8 +30,8 @@ class RedisWaitingQueueReaderTest {
     @Autowired
     private RedisTemplate<String, Object> redisTemplate;
 
-    private static final String WAITING_QUEUE_KEY = "waiting_queues";
-    private static final String ACTIVE_QUEUE_KEY = "active_queues";
+    private static final String WAITING_QUEUE_KEY = "waiting-queues";
+    private static final String ACTIVE_QUEUE_KEY = "active-queues";
     private static final String QUEUE_USER_KEY_PREFIX = "queue-user:";
 
     @Test

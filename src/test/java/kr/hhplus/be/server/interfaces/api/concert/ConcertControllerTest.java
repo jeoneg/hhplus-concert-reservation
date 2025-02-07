@@ -2,6 +2,7 @@ package kr.hhplus.be.server.interfaces.api.concert;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import kr.hhplus.be.server.domain.concert.ConcertScheduleService;
+import kr.hhplus.be.server.domain.concert.ConcertService;
 import kr.hhplus.be.server.domain.concert.SeatService;
 import kr.hhplus.be.server.domain.concert.model.ConcertScheduleInfo;
 import kr.hhplus.be.server.domain.concert.model.SeatInfo;
@@ -33,6 +34,9 @@ class ConcertControllerTest {
 
     @MockitoBean
     private WaitingQueueService waitingQueueService;
+
+    @MockitoBean
+    private ConcertService concertService;
 
     @MockitoBean
     private ConcertScheduleService concertScheduleService;

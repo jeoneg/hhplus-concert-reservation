@@ -1,5 +1,6 @@
 package kr.hhplus.be.server.infrastructure.queue;
 
+import kr.hhplus.be.server.common.exception.NotFoundException;
 import kr.hhplus.be.server.domain.queue.WaitingQueueReader;
 import kr.hhplus.be.server.domain.queue.entity.WaitingQueue;
 import kr.hhplus.be.server.domain.queue.entity.WaitingQueueStatus;
@@ -9,6 +10,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
+import static kr.hhplus.be.server.common.exception.ErrorMessage.QUEUE_TOKEN_NOT_FOUND;
 import static kr.hhplus.be.server.domain.queue.entity.WaitingQueueStatus.ACTIVATED;
 import static kr.hhplus.be.server.domain.queue.entity.WaitingQueueStatus.WAITING;
 
@@ -38,6 +40,10 @@ public class RedisWaitingQueueReader implements WaitingQueueReader {
 
     private Optional<WaitingQueue> createWaitingQueue(String token, WaitingQueueStatus status, Long waitingNumber) {
         Long userId = (Long) redisTemplate.opsForHash().get(QUEUE_USER_KEY_PREFIX + token, "userId");
+        if (userId == null) {
+            throw new NotFoundException(QUEUE_TOKEN_NOT_FOUND.getMessage());
+        }
+
         WaitingQueue waitingQueue = WaitingQueue.builder()
             .userId(userId)
             .token(token)
