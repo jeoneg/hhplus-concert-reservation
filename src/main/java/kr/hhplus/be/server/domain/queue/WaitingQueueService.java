@@ -51,8 +51,12 @@ public class WaitingQueueService {
     }
 
     public void checkActivatedWaitingQueue(String token) {
-        waitingQueueReader.findByToken(token)
-                .orElseThrow(() -> new NotFoundException(QUEUE_TOKEN_NOT_FOUND.getMessage()));
+        WaitingQueue waitingQueue = waitingQueueReader.findByToken(token)
+            .orElseThrow(() -> new NotFoundException(QUEUE_TOKEN_NOT_FOUND.getMessage()));
+
+        if (waitingQueue.isWaiting()) {
+            throw new IllegalStateException(QUEUE_TOKEN_VALUE_INVALID.getMessage());
+        }
     }
 
     @Transactional
