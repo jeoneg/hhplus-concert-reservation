@@ -52,7 +52,7 @@ public class WaitingQueueInfo {
                     .build();
         }
 
-        public static GetWaitingQueue of(WaitingQueue waitingQueue, Long waitingNumber) {
+        public static GetWaitingQueue of(WaitingQueue waitingQueue) {
             return GetWaitingQueue.builder()
                     .id(waitingQueue.getId())
                     .userId(waitingQueue.getUserId())
@@ -62,7 +62,7 @@ public class WaitingQueueInfo {
                     .expiredAt(waitingQueue.getExpiredAt())
                     .createdAt(waitingQueue.getCreatedAt())
                     .modifiedAt(waitingQueue.getModifiedAt())
-                    .waitingNumber(waitingNumber)
+                    .waitingNumber(waitingQueue.getWaitingNumber())
                     .build();
         }
     }

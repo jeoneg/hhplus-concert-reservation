@@ -31,15 +31,17 @@ public class WaitingQueue extends BaseTimeEntity {
     @Enumerated(STRING)
     private WaitingQueueStatus status;
 
+    private Long waitingNumber;
     private LocalDateTime activatedAt;
     private LocalDateTime expiredAt;
 
     @Builder
-    public WaitingQueue(Long id, Long userId, String token, WaitingQueueStatus status, LocalDateTime activatedAt, LocalDateTime expiredAt) {
+    public WaitingQueue(Long id, Long userId, String token, WaitingQueueStatus status, Long waitingNumber, LocalDateTime activatedAt, LocalDateTime expiredAt) {
         this.id = id;
         this.userId = userId;
         this.token = token;
         this.status = status;
+        this.waitingNumber = waitingNumber;
         this.activatedAt = activatedAt;
         this.expiredAt = expiredAt;
     }

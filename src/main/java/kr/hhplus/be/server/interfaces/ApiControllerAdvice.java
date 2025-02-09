@@ -19,6 +19,11 @@ public class ApiControllerAdvice {
         return new ResponseEntity<>(ErrorResponse.of(400, BAD_REQUEST, e.getFieldErrors().get(0).getDefaultMessage()), BAD_REQUEST);
     }
 
+    @ExceptionHandler(IllegalStateException.class)
+    public ResponseEntity<ErrorResponse> handleIllegalStateException(IllegalStateException e) {
+        return new ResponseEntity<>(ErrorResponse.of(400, BAD_REQUEST, e.getMessage()), BAD_REQUEST);
+    }
+
     @ExceptionHandler(BadRequestException.class)
     public ResponseEntity<ErrorResponse> handleBadRequestException(BadRequestException e) {
         return new ResponseEntity<>(ErrorResponse.of(400, BAD_REQUEST, e.getMessage()), BAD_REQUEST);

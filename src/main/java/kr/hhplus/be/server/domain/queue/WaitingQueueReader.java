@@ -8,6 +8,4 @@ public interface WaitingQueueReader {
 
     Optional<WaitingQueue> findByToken(String token);
 
-    Optional<WaitingQueue> findLatestActivated();
-
 }

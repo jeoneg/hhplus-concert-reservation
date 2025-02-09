@@ -6,4 +6,12 @@ public interface TimeProvider {
 
     LocalDateTime now();
 
+    long getCurrentTimestampInSecondsKST();
+
+    long getCurrentTimestampInMillisKST();
+
+    LocalDateTime fromEpochSecondKST(long epochSecond);
+
+    LocalDateTime fromEpochMilliKST(long epochMillis);
+
 }

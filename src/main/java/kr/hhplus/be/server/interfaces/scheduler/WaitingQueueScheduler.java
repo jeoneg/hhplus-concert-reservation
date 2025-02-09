@@ -21,10 +21,4 @@ public class WaitingQueueScheduler {
         log.info("활성화 대기열 카운트: {}", activatedCount);
     }
 
-    @Scheduled(fixedDelay = 60100)
-    public void expireWaitingQueue() {
-        int expiredCount = waitingQueueService.expireWaitingQueues();
-        log.info("만료 대기열 카운트: {}", expiredCount);
-    }
-
 }

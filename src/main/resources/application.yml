@@ -10,7 +10,7 @@ spring:
     name: HangHaePlusDataSource
     type: com.zaxxer.hikari.HikariDataSource
     hikari:
-      maximum-pool-size: 10
+      maximum-pool-size: 50
       connection-timeout: 10000
       max-lifetime: 60000
     driver-class-name: com.mysql.cj.jdbc.Driver
@@ -25,6 +25,10 @@ spring:
       hibernate.jdbc.time_zone: UTC
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+  data:
+    redis:
+      host: localhost
+      port: 6379
 
 springdoc:
   swagger-ui:
@@ -51,10 +55,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: create
+#    show-sql: true
     properties:
       hibernate:
         format_sql: true
-        show-sql: true
     defer-datasource-initialization: true
 
   sql:
@@ -63,7 +67,9 @@ spring:
       data-locations:
         - classpath:sql/data.sql
 
-logging:
-  level:
-    org.hibernate.sql: debug
-    org.hibernate.type: trace
+#logging:
+#  level:
+#    org.springframework.transaction: trace
+#    org.springframework.cache: trace
+#    org.hibernate.sql: debug
+#    org.hibernate.type: trace
