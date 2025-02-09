@@ -8,6 +8,8 @@ public interface SeatWriter {
 
     Seat save(Seat seat);
 
+    Seat saveAndFlush(Seat seat);
+
     int expireTemporaryReservations(LocalDateTime now);
 
 }

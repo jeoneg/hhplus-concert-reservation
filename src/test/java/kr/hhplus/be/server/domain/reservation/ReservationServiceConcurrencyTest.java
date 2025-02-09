@@ -9,6 +9,7 @@ import kr.hhplus.be.server.domain.concert.entity.Seat;
 import kr.hhplus.be.server.domain.concert.model.SeatStatus;
 import kr.hhplus.be.server.domain.user.UserWriter;
 import kr.hhplus.be.server.domain.user.entity.User;
+import kr.hhplus.be.server.infrastructure.reservation.ReservationJpaRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,6 +48,9 @@ class ReservationServiceConcurrencyTest {
     @Autowired
     private SeatWriter seatWriter;
 
+    @Autowired
+    private ReservationJpaRepository reservationJpaRepository;
+
     @Test
     void 특정_좌석을_예약할_때_동시에_50개의_요청이_들어오면_1개의_요청만_성공한다() throws InterruptedException {
         // given
@@ -80,7 +84,7 @@ class ReservationServiceConcurrencyTest {
                     successCount.incrementAndGet();
                 } catch (Exception e) {
                     failCount.incrementAndGet();
-                    log.error("예약 실패: 사용자 ID = {}", userId);
+                    log.error("예약 실패: 사용자 ID = {}", userId, e.getMessage());
                 } finally {
                     durations.add(System.currentTimeMillis() - taskStartTime);
                     latch.countDown();

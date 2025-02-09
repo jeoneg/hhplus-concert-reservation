@@ -10,13 +10,14 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static jakarta.persistence.LockModeType.OPTIMISTIC;
 import static jakarta.persistence.LockModeType.PESSIMISTIC_WRITE;
 
 public interface SeatJpaRepository extends JpaRepository<Seat, Long> {
 
     List<Seat> findAllByPlaceId(Long placeId);
 
-    @Lock(PESSIMISTIC_WRITE)
+    @Lock(OPTIMISTIC)
     @Query("select s from Seat s where s.id = :id")
     Optional<Seat> findByIdWithLock(Long id);
 
