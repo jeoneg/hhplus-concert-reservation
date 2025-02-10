@@ -23,12 +23,12 @@ public class WebConfig implements WebMvcConfigurer {
                 .excludePathPatterns("/api/v1/points/**");
     }
 
-    @Bean
+//    @Bean
     public FilterRegistrationBean<LogFilter> logFilter() {
         FilterRegistrationBean<LogFilter> registration = new FilterRegistrationBean<>();
         registration.setFilter(new LogFilter());
         registration.setOrder(1);
-        registration.addUrlPatterns("/**");
+        registration.addUrlPatterns("/*");
         return registration;
     }
 

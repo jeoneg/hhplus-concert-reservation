@@ -8,7 +8,6 @@ import org.springframework.web.util.ContentCachingRequestWrapper;
 import org.springframework.web.util.ContentCachingResponseWrapper;
 
 import java.io.IOException;
-import java.util.Arrays;
 
 @Slf4j
 public class LogFilter implements Filter {
@@ -17,17 +16,20 @@ public class LogFilter implements Filter {
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpResponse = (HttpServletResponse) servletResponse;
-        ContentCachingRequestWrapper requestWrapper = new ContentCachingRequestWrapper(httpRequest);
+        CachedBodyRequestWrapper requestWrapper = new CachedBodyRequestWrapper(httpRequest);
         ContentCachingResponseWrapper responseWrapper = new ContentCachingResponseWrapper(httpResponse);
 
         String requestURI = requestWrapper.getRequestURI();
-        String requestBody = Arrays.toString(requestWrapper.getContentAsByteArray());
+        String requestBody = new String(requestWrapper.getCachedBody());
         log.info("REQUEST [{}][{}]", requestURI, requestBody);
 
-        filterChain.doFilter(servletRequest, servletResponse);
+        filterChain.doFilter(requestWrapper, responseWrapper);
 
-        String responseBody = Arrays.toString(responseWrapper.getContentAsByteArray());
+        String responseBody = new String(responseWrapper.getContentAsByteArray());
         log.info("RESPONSE [{}][{}]", requestURI, responseBody);
+
+        // 응답 본문 복구
+        responseWrapper.copyBodyToResponse();
     }
 
 }

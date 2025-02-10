@@ -1,2 +1,0 @@
-GET http://localhost:8989/api/v1/concerts/1
-Queue-Token: 5d687e72-63f2-44ac-a3de-0309b830c0f6
