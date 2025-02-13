@@ -7,10 +7,9 @@ export let options = {
 };
 
 export default function () {
-    const url = 'http://localhost:8989/api/v1/concerts/9/schedules';
-    const headers = {'Queue-Token': '29f96251-56aa-4ce2-b15d-b0073422abe0'};
+    const url = 'http://localhost:8989/api/v1/concerts/5555/schedules';
+    const headers = {'Queue-Token': 'e301a2d6-19ae-454c-8981-28d67e490421'};
     const response = http.get(url, {headers: headers});
-    // console.log(response.status);
     check(response, {
         'is status 200': (r) => r.status === 200,
     });

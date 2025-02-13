@@ -202,7 +202,7 @@ class ReservationServiceTest {
         verify(concertReader, times(1)).findById(concertId);
         verify(concertScheduleReader, times(1)).findById(scheduleId);
         verify(seatReader, times(1)).findByIdWithLock(seatId);
-        verify(seatWriter, times(1)).save(any(Seat.class));
+        verify(seatWriter, times(1)).saveAndFlush(any(Seat.class));
         verify(reservationWriter, times(1)).save(any(Reservation.class));
     }
 

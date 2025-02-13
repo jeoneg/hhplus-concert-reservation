@@ -13,12 +13,18 @@ import kr.hhplus.be.server.domain.concert.entity.ConcertSchedule;
 import kr.hhplus.be.server.domain.concert.entity.Seat;
 import kr.hhplus.be.server.domain.reservation.entity.Reservation;
 import kr.hhplus.be.server.domain.reservation.model.ReservationInfo;
+import kr.hhplus.be.server.domain.reservation.model.ReservationStatus;
 import kr.hhplus.be.server.domain.user.UserReader;
 import kr.hhplus.be.server.domain.user.entity.User;
+import kr.hhplus.be.server.interfaces.api.reservation.response.ReservationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static kr.hhplus.be.server.common.exception.ErrorMessage.*;
 
@@ -84,6 +90,13 @@ public class ReservationService {
 
         reservationWriter.save(reservation);
         seatWriter.save(seat);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReservationResponse.Search> search(ReservationStatus status, LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+        return reservationReader.search(status, startDateTime, endDateTime);
     }
 
 }

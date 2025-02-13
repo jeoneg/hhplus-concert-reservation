@@ -29,4 +29,11 @@ public class ReservationResponse {
         }
     }
 
+    @Builder
+    public record Search(
+        Long concertId,
+        Long count
+    ) {
+    }
+
 }

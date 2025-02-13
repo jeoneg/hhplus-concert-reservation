@@ -12,6 +12,16 @@ services:
     volumes:
       - ./data/mysql/:/var/lib/mysql
 
+  redis:
+    image: redis:7.4.2
+    ports:
+      - "6379:6379"
+    command: redis-server --save 20 1 --loglevel warning --requirepass application
+    volumes:
+      - ./data/redis:/data
+    environment:
+      - REDIS_PASSWORD=application
+
 networks:
   default:
     driver: bridge

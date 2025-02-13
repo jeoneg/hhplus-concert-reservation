@@ -1,0 +1,2 @@
+GET http://localhost:8989/api/v1/reservations?status=CANCELLED&startDate=2025-02-11&endDate=2025-02-13
+Queue-Token:c9bac468-2ce9-4b84-87b6-befe10f05c69
