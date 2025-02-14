@@ -1,2 +1,2 @@
-GET http://localhost:8989/api/v1/concerts/9/schedules
-Queue-Token: token
+GET http://localhost:8989/api/v1/concerts/5555/schedules
+Queue-Token: 17ade815-6bb3-42af-aead-9df6f2bc573e

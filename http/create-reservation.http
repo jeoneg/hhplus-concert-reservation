@@ -1,0 +1,10 @@
+POST http://localhost:8989/api/v1/reservations
+Queue-Token: c9bac468-2ce9-4b84-87b6-befe10f05c69
+Content-Type: application/json
+
+{
+  "userId": "1",
+  "concertId": "1",
+  "scheduleId": "1",
+  "seatId": "1"
+}

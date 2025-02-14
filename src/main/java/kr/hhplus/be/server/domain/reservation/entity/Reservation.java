@@ -10,6 +10,8 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+
 import static jakarta.persistence.EnumType.STRING;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static kr.hhplus.be.server.domain.reservation.model.ReservationStatus.CONFIRMED;
@@ -29,18 +31,20 @@ public class Reservation extends BaseTimeEntity {
     private Long scheduleId;
     private Long seatId;
     private int paymentAmount;
+    private LocalDateTime reservationAt;
 
     @Enumerated(STRING)
     private ReservationStatus status;
 
     @Builder
-    public Reservation(Long id, Long userId, Long concertId, Long scheduleId, Long seatId, int paymentAmount, ReservationStatus status) {
+    public Reservation(Long id, Long userId, Long concertId, Long scheduleId, Long seatId, int paymentAmount, LocalDateTime reservationAt, ReservationStatus status) {
         this.id = id;
         this.userId = userId;
         this.concertId = concertId;
         this.scheduleId = scheduleId;
         this.seatId = seatId;
         this.paymentAmount = paymentAmount;
+        this.reservationAt = reservationAt;
         this.status = status;
     }
 

@@ -1,8 +1,6 @@
 package kr.hhplus.be.server.domain.point.entity;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import kr.hhplus.be.server.common.exception.BadRequestException;
 import kr.hhplus.be.server.domain.BaseTimeEntity;
 import lombok.Builder;
@@ -14,6 +12,7 @@ import static kr.hhplus.be.server.common.exception.ErrorMessage.*;
 import static lombok.AccessLevel.PROTECTED;
 
 @Getter
+@Table(name = "point", indexes = @Index(name = "idx_user_id", columnList = "user_id"))
 @Entity
 @NoArgsConstructor(access = PROTECTED)
 public class Point extends BaseTimeEntity {
@@ -21,6 +20,7 @@ public class Point extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
+
     private Long userId;
     private int balance;
 

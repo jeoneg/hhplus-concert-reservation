@@ -13,12 +13,19 @@ import kr.hhplus.be.server.domain.concert.entity.ConcertSchedule;
 import kr.hhplus.be.server.domain.concert.entity.Seat;
 import kr.hhplus.be.server.domain.reservation.entity.Reservation;
 import kr.hhplus.be.server.domain.reservation.model.ReservationInfo;
+import kr.hhplus.be.server.domain.reservation.model.ReservationStatus;
 import kr.hhplus.be.server.domain.user.UserReader;
 import kr.hhplus.be.server.domain.user.entity.User;
+import kr.hhplus.be.server.interfaces.api.reservation.response.ReservationResponse;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.List;
 
 import static kr.hhplus.be.server.common.exception.ErrorMessage.*;
 
@@ -35,6 +42,7 @@ public class ReservationService {
     private final ReservationReader reservationReader;
     private final ReservationWriter reservationWriter;
     private final TimeProvider timeProvider;
+    private final ApplicationEventPublisher applicationEventPublisher;
 
 //    @DistributedLock(key = "#command.seatId()", leaseTime = 5, lockType = LockType.SIMPLE_LOCK)
     @Transactional
@@ -62,6 +70,9 @@ public class ReservationService {
         Reservation savedReservation = reservationWriter.save(reservation);
 
         log.info("예약 성공: 사용자 ID = {}, 좌석 ID = {}, 예약 ID = {}", user.getId(), savedReservation.getSeatId(), savedReservation.getId());
+
+        applicationEventPublisher.publishEvent(ReservationCompletedEvent.from(savedReservation));
+
         return ReservationInfo.Create.from(savedReservation);
     }
 
@@ -84,6 +95,13 @@ public class ReservationService {
 
         reservationWriter.save(reservation);
         seatWriter.save(seat);
+    }
+
+    @Transactional(readOnly = true)
+    public List<ReservationResponse.Search> search(ReservationStatus status, LocalDate startDate, LocalDate endDate) {
+        LocalDateTime startDateTime = startDate.atStartOfDay();
+        LocalDateTime endDateTime = endDate.atTime(23, 59, 59);
+        return reservationReader.search(status, startDateTime, endDateTime);
     }
 
 }
