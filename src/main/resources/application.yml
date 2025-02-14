@@ -58,13 +58,14 @@ spring:
     properties:
       hibernate:
         format_sql: true
-#    defer-datasource-initialization: true
-#
-#  sql:
-#    init:
-#      mode: always
-#      data-locations:
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+      data-locations:
 #        - classpath:sql/*
+        - classpath:sql/seat.sql
 
 ---
 spring.config.activate.on-profile: test

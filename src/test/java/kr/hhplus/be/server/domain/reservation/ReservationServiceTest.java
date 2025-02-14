@@ -21,6 +21,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.context.ApplicationEventPublisher;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -63,6 +64,9 @@ class ReservationServiceTest {
 
     @Mock
     private TimeProvider timeProvider;
+
+    @Mock
+    private ApplicationEventPublisher applicationEventPublisher;
 
     @Test
     void 특정_좌석을_예약할_때_사용자가_존재하지_않으면_NotFoundException을_반환한다() {
