@@ -41,6 +41,7 @@ dependencies {
     implementation ("org.redisson:redisson-spring-boot-starter:3.20.0")
     implementation("org.springframework.boot:spring-boot-starter-data-redis")
     implementation("org.springframework.boot:spring-boot-starter-cache")
+    implementation ("org.springframework.kafka:spring-kafka")
 
     // DB
     runtimeOnly("com.mysql:mysql-connector-j")

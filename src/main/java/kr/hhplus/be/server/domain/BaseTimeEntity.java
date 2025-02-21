@@ -1,7 +1,6 @@
 package kr.hhplus.be.server.domain;
 
-import jakarta.persistence.EntityListeners;
-import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.*;
 import lombok.Getter;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
@@ -15,9 +14,22 @@ import java.time.LocalDateTime;
 public abstract class BaseTimeEntity {
 
     @CreatedDate
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 
     @LastModifiedBy
     private LocalDateTime modifiedAt;
+
+    @PrePersist
+    public void prePersist() {
+        LocalDateTime now = LocalDateTime.now();
+        createdAt = now;
+        modifiedAt = now;
+    }
+
+    @PreUpdate
+    public void preUpdate() {
+        modifiedAt = LocalDateTime.now();
+    }
 
 }
