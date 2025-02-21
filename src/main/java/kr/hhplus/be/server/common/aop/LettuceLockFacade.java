@@ -18,12 +18,12 @@ public class LettuceLockFacade {
 
     public Object tryLock(String key, long leaseTime, TimeUnit timeUnit, ProceedingJoinPoint joinPoint) throws Throwable {
         while (!redisLockRepository.tryLock(key, leaseTime, timeUnit)) {
-            log.info("Lock 획득 실패: key = {}, thread = {}", key, Thread.currentThread());
+            log.info("Lock 획득 실패: key = {}, thread = {}", key, Thread.currentThread().getName());
             Thread.sleep(1000);
         }
 
         try {
-            log.info("Lock 획득 성공: key = {}, thread = {}", key, Thread.currentThread());
+            log.info("Lock 획득 성공: key = {}, thread = {}", key, Thread.currentThread().getName());
             return aopForTransaction.proceed(joinPoint);
         } finally {
             redisLockRepository.unlock(key);

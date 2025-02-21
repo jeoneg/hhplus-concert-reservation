@@ -31,8 +31,8 @@ public class Seat extends BaseTimeEntity {
     private LocalDateTime expiredAt;
     private int price;
 
-    @Version
-    private Long version;
+//    @Version
+//    private Long version;
 
     @Builder
     public Seat(int price, LocalDateTime expiredAt, SeatStatus status, Long placeId, Long id) {

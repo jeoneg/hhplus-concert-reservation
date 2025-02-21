@@ -11,6 +11,7 @@ import kr.hhplus.be.server.domain.concert.entity.ConcertSchedule;
 import kr.hhplus.be.server.domain.concert.entity.Seat;
 import kr.hhplus.be.server.domain.concert.model.SeatStatus;
 import kr.hhplus.be.server.domain.reservation.entity.Reservation;
+import kr.hhplus.be.server.domain.reservation.event.ReservationCompletedEventPublisher;
 import kr.hhplus.be.server.domain.reservation.model.ReservationInfo;
 import kr.hhplus.be.server.domain.reservation.model.ReservationStatus;
 import kr.hhplus.be.server.domain.user.UserReader;
@@ -63,6 +64,9 @@ class ReservationServiceTest {
 
     @Mock
     private TimeProvider timeProvider;
+
+    @Mock
+    private ReservationCompletedEventPublisher eventPublisher;
 
     @Test
     void 특정_좌석을_예약할_때_사용자가_존재하지_않으면_NotFoundException을_반환한다() {
@@ -131,7 +135,7 @@ class ReservationServiceTest {
         when(userReader.findById(userId)).thenReturn(Optional.of(createUser(userId)));
         when(concertReader.findById(concertId)).thenReturn(Optional.of(new Concert(concertId, "콘서트")));
         when(concertScheduleReader.findById(scheduleId)).thenReturn(Optional.ofNullable(createSchedule(scheduleId)));
-        when(seatReader.findByIdWithLock(seatId)).thenReturn(Optional.empty());
+        when(seatReader.findById(seatId)).thenReturn(Optional.empty());
 
         // when, then
         assertThatThrownBy(() -> sut.reserve(ReservationCommand.Create.of(userId, concertId, scheduleId, seatId)))
@@ -141,7 +145,7 @@ class ReservationServiceTest {
         verify(userReader, times(1)).findById(userId);
         verify(concertReader, times(1)).findById(concertId);
         verify(concertScheduleReader, times(1)).findById(scheduleId);
-        verify(seatReader, times(1)).findByIdWithLock(seatId);
+        verify(seatReader, times(1)).findById(seatId);
     }
 
     @Test
@@ -155,7 +159,7 @@ class ReservationServiceTest {
         when(userReader.findById(userId)).thenReturn(Optional.of(createUser(userId)));
         when(concertReader.findById(concertId)).thenReturn(Optional.of(new Concert(concertId, "콘서트")));
         when(concertScheduleReader.findById(scheduleId)).thenReturn(Optional.ofNullable(createSchedule(scheduleId)));
-        when(seatReader.findByIdWithLock(seatId)).thenReturn(Optional.of(createSeat(seatId, 1L, TEMPORARY_RESERVED, null, 130000)));
+        when(seatReader.findById(seatId)).thenReturn(Optional.of(createSeat(seatId, 1L, TEMPORARY_RESERVED, null, 130000)));
 
         // when, then
         assertThatThrownBy(() -> sut.reserve(ReservationCommand.Create.of(userId, concertId, scheduleId, seatId)))
@@ -165,7 +169,7 @@ class ReservationServiceTest {
         verify(userReader, times(1)).findById(userId);
         verify(concertReader, times(1)).findById(concertId);
         verify(concertScheduleReader, times(1)).findById(scheduleId);
-        verify(seatReader, times(1)).findByIdWithLock(seatId);
+        verify(seatReader, times(1)).findById(seatId);
     }
 
     @Test
@@ -182,7 +186,7 @@ class ReservationServiceTest {
         when(userReader.findById(userId)).thenReturn(Optional.of(createUser(userId)));
         when(concertReader.findById(concertId)).thenReturn(Optional.of(new Concert(concertId, "콘서트")));
         when(concertScheduleReader.findById(scheduleId)).thenReturn(Optional.ofNullable(createSchedule(scheduleId)));
-        when(seatReader.findByIdWithLock(seatId)).thenReturn(Optional.of(createSeat(seatId, 1L, AVAILABLE, null, paymentAmount)));
+        when(seatReader.findById(seatId)).thenReturn(Optional.of(createSeat(seatId, 1L, AVAILABLE, null, paymentAmount)));
         when(timeProvider.now()).thenReturn(LocalDateTime.now());
         when(reservationWriter.save(any(Reservation.class))).thenReturn(createReservation(id, userId, concertId, scheduleId, seatId, paymentAmount, status));
 
@@ -201,8 +205,8 @@ class ReservationServiceTest {
         verify(userReader, times(1)).findById(userId);
         verify(concertReader, times(1)).findById(concertId);
         verify(concertScheduleReader, times(1)).findById(scheduleId);
-        verify(seatReader, times(1)).findByIdWithLock(seatId);
-        verify(seatWriter, times(1)).saveAndFlush(any(Seat.class));
+        verify(seatReader, times(1)).findById(seatId);
+        verify(seatWriter, times(1)).save(any(Seat.class));
         verify(reservationWriter, times(1)).save(any(Reservation.class));
     }
 

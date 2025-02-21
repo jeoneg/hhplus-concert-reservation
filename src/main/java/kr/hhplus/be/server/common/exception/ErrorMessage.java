@@ -32,7 +32,9 @@ public enum ErrorMessage {
     POINT_CHARGE_AMOUNT_INVALID("충전할 포인트는 0보다 커야합니다."),
     POINT_USE_AMOUNT_INVALID("사용할 포인트는 0보다 커야합니다."),
     POINT_NOT_FOUND("존재하지 않는 포인트 정보입니다."),
-    POINT_NOT_ENOUGH("포인트가 부족합니다.")
+    POINT_NOT_ENOUGH("포인트가 부족합니다."),
+
+    OUTBOX_NOT_FOUND("존재하지 않는 발신 메시지입니다."),
     ;
 
     private final String message;

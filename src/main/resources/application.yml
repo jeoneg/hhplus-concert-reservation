@@ -4,8 +4,10 @@ server:
 spring:
   application:
     name: hhplus
+
   profiles:
     active: local
+
   datasource:
     name: HangHaePlusDataSource
     type: com.zaxxer.hikari.HikariDataSource
@@ -14,6 +16,7 @@ spring:
       connection-timeout: 10000
       max-lifetime: 60000
     driver-class-name: com.mysql.cj.jdbc.Driver
+
   jpa:
     open-in-view: false
     generate-ddl: false
@@ -25,10 +28,24 @@ spring:
       hibernate.jdbc.time_zone: UTC
       hibernate:
         dialect: org.hibernate.dialect.MySQLDialect
+
   data:
     redis:
       host: localhost
       port: 6379
+
+  kafka:
+    bootstrap-servers: localhost:9094
+    producer:
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
+      value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    consumer:
+      group-id: reservation-consumer-group
+      auto-offset-reset: latest
+      enable-auto-commit: false
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+#      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
 
 springdoc:
   swagger-ui:
@@ -54,17 +71,19 @@ spring:
   jpa:
     hibernate:
       ddl-auto: none
-#    show-sql: true
+#      ddl-auto: create
+    show-sql: true
     properties:
       hibernate:
         format_sql: true
-#    defer-datasource-initialization: true
-#
-#  sql:
-#    init:
-#      mode: always
-#      data-locations:
+    defer-datasource-initialization: true
+
+  sql:
+    init:
+      mode: always
+      data-locations:
 #        - classpath:sql/*
+        - classpath:sql/seat.sql
 
 ---
 spring.config.activate.on-profile: test

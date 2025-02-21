@@ -12,6 +12,8 @@ import kr.hhplus.be.server.domain.concert.entity.Concert;
 import kr.hhplus.be.server.domain.concert.entity.ConcertSchedule;
 import kr.hhplus.be.server.domain.concert.entity.Seat;
 import kr.hhplus.be.server.domain.reservation.entity.Reservation;
+import kr.hhplus.be.server.domain.reservation.event.ReservationCompletedEvent;
+import kr.hhplus.be.server.domain.reservation.event.ReservationCompletedEventPublisher;
 import kr.hhplus.be.server.domain.reservation.model.ReservationInfo;
 import kr.hhplus.be.server.domain.reservation.model.ReservationStatus;
 import kr.hhplus.be.server.domain.user.UserReader;
@@ -41,9 +43,9 @@ public class ReservationService {
     private final ReservationReader reservationReader;
     private final ReservationWriter reservationWriter;
     private final TimeProvider timeProvider;
+    private final ReservationCompletedEventPublisher eventPublisher;
 
-//    @DistributedLock(key = "#command.seatId()", leaseTime = 5, lockType = LockType.SIMPLE_LOCK)
-    @Transactional
+    @DistributedLock(key = "#command.seatId()", leaseTime = 5, lockType = LockType.SIMPLE_LOCK)
     public ReservationInfo.Create reserve(ReservationCommand.Create command) {
         command.validate();
 
@@ -54,7 +56,7 @@ public class ReservationService {
         ConcertSchedule schedule = concertScheduleReader.findById(command.scheduleId())
                 .orElseThrow(() -> new NotFoundException(SCHEDULE_NOT_FOUND.getMessage()));
 
-        Seat seat = seatReader.findByIdWithLock(command.seatId())
+        Seat seat = seatReader.findById(command.seatId())
             .orElseThrow(() -> new NotFoundException(SEAT_NOT_FOUND.getMessage()));
 
         if (seat.isReserved()) {
@@ -62,12 +64,13 @@ public class ReservationService {
         }
 
         seat.temporaryReserve(timeProvider.now());
-        seatWriter.saveAndFlush(seat);
+        seatWriter.save(seat);
 
         Reservation reservation = Reservation.create(command.userId(), command.concertId(), command.scheduleId(), command.seatId(), seat.getPrice());
         Reservation savedReservation = reservationWriter.save(reservation);
 
-        log.info("예약 성공: 사용자 ID = {}, 좌석 ID = {}, 예약 ID = {}", user.getId(), savedReservation.getSeatId(), savedReservation.getId());
+        eventPublisher.publish(ReservationCompletedEvent.from(savedReservation));
+
         return ReservationInfo.Create.from(savedReservation);
     }
 

@@ -25,7 +25,7 @@ public class RedissonLockFacade {
         try {
             boolean isLocked = rLock.tryLock(waitTime, leaseTime, timeUnit);
             if (!isLocked) {
-                throw new LockAcquisitionFailedException("락 획득 실패: key = " + key + ", thread = " + Thread.currentThread());
+                throw new LockAcquisitionFailedException("락 획득 실패: key = " + key + ", thread = " + Thread.currentThread().getName());
             }
 
             log.info("Lock 획득 성공: {}", Thread.currentThread());

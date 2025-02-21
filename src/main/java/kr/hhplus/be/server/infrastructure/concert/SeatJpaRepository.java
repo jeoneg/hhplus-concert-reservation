@@ -17,7 +17,7 @@ public interface SeatJpaRepository extends JpaRepository<Seat, Long> {
 
     List<Seat> findAllByPlaceId(Long placeId);
 
-    @Lock(OPTIMISTIC)
+//    @Lock(OPTIMISTIC)
     @Query("select s from Seat s where s.id = :id")
     Optional<Seat> findByIdWithLock(Long id);
 
