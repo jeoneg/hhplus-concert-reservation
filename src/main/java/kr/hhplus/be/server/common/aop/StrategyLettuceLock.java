@@ -11,12 +11,13 @@ import java.util.concurrent.TimeUnit;
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class LettuceLockFacade {
+public class StrategyLettuceLock implements DistributedLockStrategy {
 
     private final RedisLockRepository redisLockRepository;
     private final AopForTransaction aopForTransaction;
 
-    public Object tryLock(String key, long leaseTime, TimeUnit timeUnit, ProceedingJoinPoint joinPoint) throws Throwable {
+    @Override
+    public Object tryLock(String key, Long waitTime, Long leaseTime, TimeUnit timeUnit, ProceedingJoinPoint joinPoint) throws Throwable {
         while (!redisLockRepository.tryLock(key, leaseTime, timeUnit)) {
             log.info("Lock 획득 실패: key = {}, thread = {}", key, Thread.currentThread().getName());
             Thread.sleep(1000);

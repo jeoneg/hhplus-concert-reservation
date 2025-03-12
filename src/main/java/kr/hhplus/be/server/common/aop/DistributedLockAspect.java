@@ -12,8 +12,6 @@ import org.springframework.expression.spel.standard.SpelExpressionParser;
 import org.springframework.expression.spel.support.StandardEvaluationContext;
 import org.springframework.stereotype.Component;
 
-import static kr.hhplus.be.server.common.aop.LockType.*;
-
 @Slf4j
 @Aspect
 @Component
@@ -22,37 +20,25 @@ public class DistributedLockAspect {
 
     private static final String REDISSON_LOCK_PREFIX = "LOCK:";
 
-    private final RedissonLockFacade redissonLockFacade;
-    private final LettuceLockFacade lettuceLockFacade;
+    private final DistributedLockStrategyFactory strategyFactory;
 
     @Around("@annotation(distributedLock)")
     public Object lock(final ProceedingJoinPoint joinPoint, DistributedLock distributedLock) throws Throwable {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
-
         String key = REDISSON_LOCK_PREFIX + generateKey(signature.getParameterNames(), joinPoint.getArgs(), distributedLock.key());
-
         LockType lockType = distributedLock.lockType();
 
-        if (lockType == SIMPLE_LOCK) {
-            return redissonLockFacade.tryLock(
-                key,
-                distributedLock.waitTime(),
-                distributedLock.leaseTime(),
-                distributedLock.timeUnit(),
-                joinPoint
-            );
-        }
+        DistributedLockContext context = new DistributedLockContext();
+        DistributedLockStrategy strategy = strategyFactory.createStrategy(lockType);
+        context.setStrategy(strategy);
 
-        if (lockType == SPIN_LOCK) {
-            return lettuceLockFacade.tryLock(
-                key,
-                distributedLock.leaseTime(),
-                distributedLock.timeUnit(),
-                joinPoint
-            );
-        }
-
-        return null;
+        return context.tryLock(
+            key,
+            distributedLock.waitTime(),
+            distributedLock.leaseTime(),
+            distributedLock.timeUnit(),
+            joinPoint
+        );
     }
 
     private Object generateKey(String[] parameterNames, Object[] args, String key) {

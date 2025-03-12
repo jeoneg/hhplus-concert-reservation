@@ -9,18 +9,18 @@ import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 import org.springframework.stereotype.Component;
 
-import java.sql.Connection;
 import java.util.concurrent.TimeUnit;
 
 @Slf4j
 @Component
 @RequiredArgsConstructor
-public class RedissonLockFacade {
+public class StrategyRedissonLock implements DistributedLockStrategy {
 
     private final RedissonClient redissonClient;
     private final AopForTransaction aopForTransaction;
 
-    public Object tryLock(String key, long waitTime, long leaseTime, TimeUnit timeUnit, ProceedingJoinPoint joinPoint) throws Throwable {
+    @Override
+    public Object tryLock(String key, Long waitTime, Long leaseTime, TimeUnit timeUnit, ProceedingJoinPoint joinPoint) throws Throwable {
         RLock rLock = redissonClient.getLock(key);
         try {
             boolean isLocked = rLock.tryLock(waitTime, leaseTime, timeUnit);

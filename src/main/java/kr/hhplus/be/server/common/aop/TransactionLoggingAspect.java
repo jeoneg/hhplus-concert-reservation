@@ -17,7 +17,7 @@ public class TransactionLoggingAspect {
     @Before("@annotation(org.springframework.transaction.annotation.Transactional)")
     public void logTransactionStart(JoinPoint joinPoint) {
         boolean isNew = TransactionAspectSupport.currentTransactionStatus().isNewTransaction();
-        log.info("TX 시작: isNew = {} thread =  {}", isNew, Thread.currentThread().getName());
+        log.info("TX 시작: isNew = {}, thread = {}", isNew, Thread.currentThread().getName());
     }
 
     @AfterReturning("@annotation(org.springframework.transaction.annotation.Transactional)")
